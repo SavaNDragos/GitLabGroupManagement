@@ -4,7 +4,7 @@ namespace GitLabGroupManagement.Utils.Types
 {
     public class Project
     {
-        public  string FullName { get; set; }
+        public string FullName { get; set; }
         public string Name { get; set; }
         public string GroupName { get; set; }
         public List<PermissionRule> Permissions { get; set; } = new List<PermissionRule>();
@@ -20,6 +20,11 @@ namespace GitLabGroupManagement.Utils.Types
         public void Add(string inLine)
         {
             Permissions.Add(new PermissionRule(inLine));
+        }
+
+        public PermissionRuleListPerGroup GetPermissionRuleListPerGroup(List<UserCollection> inUserCollections)
+        {
+            return new PermissionRuleListPerGroup(Permissions, inUserCollections);
         }
     }
 }

@@ -16,5 +16,10 @@ namespace GitLabGroupManagement.Utils.Types
         {
             Permissions.Add(new PermissionRule(inLine));
         }
+
+        public PermissionRuleListPerGroup GetPermissionRuleListPerGroup(List<UserCollection> inUserCollections)
+        {
+            return new PermissionRuleListPerGroup(Permissions,inUserCollections);
+        }
     }
 }

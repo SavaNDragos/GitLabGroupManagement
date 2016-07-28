@@ -11,12 +11,12 @@ namespace GitLabGroupManagement.Utils.Types
         {
             if (!inTarget.Contains(":"))
             {
-                Target = inTarget;
+                Target = inTarget.ToLower();
             }
             else
             {
                 var tempTargetWithAccessLevel = inTarget.Split(new[] {':'});
-                Target = tempTargetWithAccessLevel[0];
+                Target = tempTargetWithAccessLevel[0].ToLower();
                 try
                 {
                     AccessLevel = Convert.ToInt32(tempTargetWithAccessLevel[1]);
@@ -30,7 +30,7 @@ namespace GitLabGroupManagement.Utils.Types
 
         public PermissionRule(string inTarget, int inAccessLevel)
         {
-            Target = inTarget;
+            Target = inTarget.ToLower();
             AccessLevel = inAccessLevel;
         }
     }

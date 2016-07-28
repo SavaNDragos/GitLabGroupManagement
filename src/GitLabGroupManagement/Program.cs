@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using GitLabGroupManagement.ConfigExtract;
+using GitLabGroupManagement.Utils.Types;
 
 namespace GitLabGroupManagement
 {
@@ -11,7 +12,9 @@ namespace GitLabGroupManagement
         {
             try
             {
-                var allpermisions = ExtractData.GetAllPermissions(@"D:\exPermissions.txt");
+                var allpermisions =  new AllPermissions(@"D:\exPermissions.txt");
+
+                var result = allpermisions.GetPermissionRuleListPerGroup(allpermisions.Groups.First());
             }
             catch (Exception ex)
             {
