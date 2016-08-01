@@ -46,6 +46,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GitlabApiHelper.cs" />
+    <Compile Include="GroupMemberOperation.cs" />
+    <Compile Include="GroupMemberOperationType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

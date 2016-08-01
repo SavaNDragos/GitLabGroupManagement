@@ -41,5 +41,12 @@ namespace GitLabManagement
             var tempParameters = new Dictionary<string, string> {{"search", inGroupName}};
             var result = ExecuteQuery("groups", tempParameters, Method.GET);
         }
+
+        public void GetAllUsersForGroup(string inGroupName)
+        {
+            //GET / groups /:id / members
+            var tempParameters = new Dictionary<string, string> ();
+            var result = ExecuteQuery($"groups//members", tempParameters, Method.GET);
+        }
     }
 }
