@@ -1,9 +1,6 @@
-﻿using GitLabGroupManagement.Utils.Types;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using GitLabGroupManagement.Utils.Types;
 
 namespace ManageGroups
 {
@@ -11,10 +8,15 @@ namespace ManageGroups
     {
         private static void Main(string[] args)
         {
+            var options = new CommandLineOptions();
+            if (!CommandLine.Parser.Default.ParseArguments(args, options))
+            {
+                throw new Exception("Incorect usage of command line parameters. Please review.");
+            }
+
             try
             {
-                var allpermisions = new AllPermissions(@"D:\exPermissions.txt");
-
+                var allpermisions = new AllPermissions(options.FileContentLocation);
                 var result = allpermisions.GetPermissionRuleListPerGroup(allpermisions.Groups.First());
             }
             catch (Exception ex)
