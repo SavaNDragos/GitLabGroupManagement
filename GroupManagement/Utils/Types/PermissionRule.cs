@@ -23,7 +23,10 @@ namespace GitLabGroupManagement.Utils.Types
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception(string.Format("The access value should be a numerical value. The value we processed was: {0}", inTarget));
+                    throw new Exception(
+                        string.Format(
+                            "The access value should be a numerical value. The value we processed was: {0}. Error message is {1}",
+                            inTarget, ex.InnerException));
                 }
             }
         }

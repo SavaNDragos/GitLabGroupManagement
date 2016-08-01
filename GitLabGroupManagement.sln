@@ -3,14 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{45E4B988-85AB-41F7-B444-CD5EF05BA353}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GroupManagement", "GroupManagement\GroupManagement.csproj", "{1DC958EF-A29B-441B-9159-53391901E9E0}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E67776E1-CE1F-4EC1-866F-CB9C77A4A259}"
-	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitLabManagement", "GitLabManagement\GitLabManagement.csproj", "{8F33722E-016A-4E07-845C-8F15C0607EC2}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GroupManagement", "src\GitLabGroupManagement\GroupManagement.xproj", "{18CB1CC4-0E79-4E21-A8F1-6FA09DA51546}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManageGroups", "ManageGroups\ManageGroups.csproj", "{793F17E3-E736-4CDE-B4BD-284723F6F8CF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,15 +15,20 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{18CB1CC4-0E79-4E21-A8F1-6FA09DA51546}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{18CB1CC4-0E79-4E21-A8F1-6FA09DA51546}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{18CB1CC4-0E79-4E21-A8F1-6FA09DA51546}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{18CB1CC4-0E79-4E21-A8F1-6FA09DA51546}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DC958EF-A29B-441B-9159-53391901E9E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DC958EF-A29B-441B-9159-53391901E9E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DC958EF-A29B-441B-9159-53391901E9E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DC958EF-A29B-441B-9159-53391901E9E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F33722E-016A-4E07-845C-8F15C0607EC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F33722E-016A-4E07-845C-8F15C0607EC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F33722E-016A-4E07-845C-8F15C0607EC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F33722E-016A-4E07-845C-8F15C0607EC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{793F17E3-E736-4CDE-B4BD-284723F6F8CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{793F17E3-E736-4CDE-B4BD-284723F6F8CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{793F17E3-E736-4CDE-B4BD-284723F6F8CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{793F17E3-E736-4CDE-B4BD-284723F6F8CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{18CB1CC4-0E79-4E21-A8F1-6FA09DA51546} = {45E4B988-85AB-41F7-B444-CD5EF05BA353}
 	EndGlobalSection
 EndGlobal
