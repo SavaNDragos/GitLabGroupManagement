@@ -128,6 +128,11 @@ namespace GitLabManagement
             }
         }
 
+        public void UpdateGroup(Group inGroup, AllPermissions inAllPermissions)
+        {
+            UpdateGroup(inGroup.Name, inAllPermissions.GetPermissionRuleListPerGroup(inGroup));
+        }
+
         public void UpdateGroup(string inGroupName, PermissionRuleListPerGroup inListWeNeedToApply)
         {
             //get group

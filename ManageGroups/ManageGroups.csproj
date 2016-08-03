@@ -57,6 +57,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GitLabManagement\GitLabManagement.csproj">
+      <Project>{8f33722e-016a-4e07-845c-8f15c0607ec2}</Project>
+      <Name>GitLabManagement</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GroupManagement\GroupManagement.csproj">
       <Project>{1DC958EF-A29B-441B-9159-53391901E9E0}</Project>
       <Name>GroupManagement</Name>
