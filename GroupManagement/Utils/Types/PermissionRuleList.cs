@@ -56,6 +56,10 @@ namespace GitLabGroupManagement.Utils.Types
         //we use this order to work with the major to the trivial one
         public static int[] AccessLevels = {50, 40, 30, 20, 10};
         public List<PermissionRuleList> PermissionRuleLists { get; set; }
+        /// <summary>
+        /// For quick access of users that we have
+        /// </summary>
+        public List<string> Users { get; set; } = new List<string>();
 
         public void InitializeList()
         {
@@ -67,6 +71,19 @@ namespace GitLabGroupManagement.Utils.Types
                 new PermissionRuleList(40),
                 new PermissionRuleList(50)
             };
+        }
+
+        public int GetAccessLevelForUser(string inUser)
+        {
+            foreach (var accessLevel in AccessLevels)
+            {
+                if (PermissionRuleLists.FirstOrDefault(obj => obj.AccessLevel == accessLevel).IsUserPresent(inUser))
+                {
+                    return accessLevel;
+                }
+            }
+            throw new Exception(string.Format("We had an issue trying to find user {0} in the permissionRuleLists",
+                inUser));
         }
 
         public PermissionRuleListPerGroup(List<PermissionRule> inPermissionRules, List<UserCollection> inUserCollections)
@@ -116,6 +133,11 @@ namespace GitLabGroupManagement.Utils.Types
                         tempPermissionCurrent.Add(tempUsersInvestigated);
                     }
                 }
+            }
+
+            foreach (var accessLevel in AccessLevels)
+            {
+                Users.AddRange(PermissionRuleLists.FirstOrDefault(obj => obj.AccessLevel == accessLevel).Users);
             }
         }
     }
