@@ -27,14 +27,14 @@ namespace ManageGroups
                 //pass on each group and apply changes
                 foreach (var iterGroup in allpermisions.Groups)
                 {
+                    Console.WriteLine($"Looking over group {iterGroup.Name} to apply permissions.");
                     gitLabApiHelper.UpdateGroup(iterGroup, allpermisions,options.SkipDelete);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("An error has been dedected.");
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
+                Console.WriteLine($"An error has been dedected with error message {ex.Message}.");
+                throw ex;
             }
         }
     }
