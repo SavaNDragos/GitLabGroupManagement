@@ -33,7 +33,8 @@ namespace ManageGroups
             catch (Exception ex)
             {
                 Console.WriteLine("An error has been dedected.");
-                Console.WriteLine(ex.InnerException);
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
             }
         }
     }
