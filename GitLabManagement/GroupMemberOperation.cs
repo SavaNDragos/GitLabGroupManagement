@@ -23,13 +23,17 @@ namespace GitLabManagement
                     case GroupMemberOperationType.Add:
                         return Method.POST;
                     case GroupMemberOperationType.Remove:
-                        return  Method.DELETE;
-                    case  GroupMemberOperationType.Update:
+                        return Method.DELETE;
+                    case GroupMemberOperationType.Update:
                         return Method.PUT;
                     default:
                         throw new Exception("Something went wrong trying to get the http method we need to use.");
                 }
             }
         }
+
+
+
+
     }
 }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using GitLabGroupManagement.Utils.Types;
 using RestSharp;
 using RestSharp.Deserializers;
+using System.Web.Script.Serialization;
 
 namespace GitLabManagement
 {
@@ -25,7 +26,7 @@ namespace GitLabManagement
                 request.AddParameter("private_token", PrivateToken);
                 foreach (var inSegment in inSegments)
                 {
-                    request.AddUrlSegment(inSegment.Key, inSegment.Value);
+                    request.AddParameter(inSegment.Key, inSegment.Value);
                 }
 
                 var response = client.Execute(request);
@@ -41,7 +42,7 @@ namespace GitLabManagement
         private List<GitLabUsers> GetAllUsers()
         {
             var returnListOfUsers = new List<GitLabUsers>();
-            int pageNumber = 0;
+            int pageNumber = 1;
             bool ContinueSearching = true;
 
             while (ContinueSearching)
@@ -53,14 +54,24 @@ namespace GitLabManagement
                 };
 
                 var result = ExecuteQuery("users", tempParameters, Method.GET);
-                var tempDeserializedResponse  =  new JsonDeserializer().Deserialize<RootGitLabUsers>(result).Property1.ToList();
-                if (!tempDeserializedResponse.Any())
+                var tempDeserializedResponse = new JavaScriptSerializer().Deserialize<List<GitLabUsers>>(result.Content);
+                //new JsonDeserializer().Deserialize<RootGitLabUsers>(result).Property1.ToList();
+
+                ContinueSearching = false;
+                foreach (var iterUser in tempDeserializedResponse)
                 {
-                    ContinueSearching = false;
-                    continue;
+                    // in case at least one new user was added to the list we should continue the search
+                    if (returnListOfUsers.FirstOrDefault(obj => obj.id == iterUser.id) == null)
+                    {
+                        returnListOfUsers.Add(iterUser);
+                        ContinueSearching = true;
+                    }
                 }
-                returnListOfUsers.AddRange(tempDeserializedResponse);
-                pageNumber++;
+
+                if (ContinueSearching == true)
+                {                  
+                    pageNumber++;
+                }
             }
 
             return returnListOfUsers;
@@ -73,7 +84,8 @@ namespace GitLabManagement
             var result = ExecuteQuery("groups", tempParameters, Method.GET);
 
             //deserialize response
-            var groupList = new JsonDeserializer().Deserialize<RootGitLabGroup>(result).Property1.ToList();
+            // var groupListOjs = new JsonDeserializer().Deserialize<RootGitLabGroup>(result);
+            var groupList = new JavaScriptSerializer().Deserialize<List<GitLabGroup>>(result.Content);
             var group = groupList.FirstOrDefault(obj => obj.name.ToUpper() == inGroupName.ToUpper());
             if (group == null)
             {
@@ -100,15 +112,33 @@ namespace GitLabManagement
                 var result = ExecuteQuery($"groups/{inGroupId}/members", tempParameters, Method.GET);
 
                 //deserialize response
-                var tempDeserializedResponse =
-                    new JsonDeserializer().Deserialize<RootUserPerGroup>(result).Property1.ToList();
+                List<UserPerGroup> tempDeserializedResponse =
+                    new JavaScriptSerializer().Deserialize<List<UserPerGroup>>(result.Content);
+                // new JsonDeserializer().Deserialize<RootUserPerGroup>(result).Property1.ToList();
+
+                var areValuesAllreadyFound = true;
+                foreach(var iterUser in tempDeserializedResponse)
+                {
+                    if (returnListOfUsers.FirstOrDefault(obj => obj.id == iterUser.id)==null)
+                    {
+                        areValuesAllreadyFound = false;
+                    }
+                }
+                if (areValuesAllreadyFound == true)
+                {
+                    ContinueSearching = false;
+                }
+
                 if (!tempDeserializedResponse.Any())
                 {
                     ContinueSearching = false;
                     continue;
                 }
-                returnListOfUsers.AddRange(tempDeserializedResponse);
-                pageNumber++;
+                if (ContinueSearching == true)
+                {
+                    returnListOfUsers.AddRange(tempDeserializedResponse);
+                    pageNumber++;
+                }
             }
             return returnListOfUsers;
         }
@@ -128,12 +158,12 @@ namespace GitLabManagement
             }
         }
 
-        public void UpdateGroup(Group inGroup, AllPermissions inAllPermissions)
+        public void UpdateGroup(Group inGroup, AllPermissions inAllPermissions, bool inSkipDelete)
         {
-            UpdateGroup(inGroup.Name, inAllPermissions.GetPermissionRuleListPerGroup(inGroup));
+            UpdateGroup(inGroup.Name, inAllPermissions.GetPermissionRuleListPerGroup(inGroup), inSkipDelete);
         }
 
-        public void UpdateGroup(string inGroupName, PermissionRuleListPerGroup inListWeNeedToApply)
+        public void UpdateGroup(string inGroupName, PermissionRuleListPerGroup inListWeNeedToApply, bool inSkipDelete)
         {
             //get group
             var tempGroup = GetProjectGroupId(inGroupName);
@@ -152,6 +182,7 @@ namespace GitLabManagement
                 {
                     Operations.Add(new GroupMemberOperation()
                     {
+                        member = userPerGroup.username,
                         member_id = userPerGroup.id,
                         OperationType = GroupMemberOperationType.Remove,
                     });
@@ -162,9 +193,10 @@ namespace GitLabManagement
             foreach (var user in inListWeNeedToApply.Users)
             {
                 if (!allUsers.Any(obj => obj.username.ToLower() == user))
-                {
+                {                  
                     Operations.Add(new GroupMemberOperation()
                     {
+                        member = user,
                         member_id = GetUserId(tempAllUsersOnServer, user),
                         OperationType = GroupMemberOperationType.Add,
                         AccessLevel = inListWeNeedToApply.GetAccessLevelForUser(user),
@@ -182,6 +214,7 @@ namespace GitLabManagement
                     {
                         Operations.Add(new GroupMemberOperation()
                         {
+                            member = userPerGroup.username,
                             member_id = userPerGroup.id,
                             OperationType = GroupMemberOperationType.Update,
                             AccessLevel = inListWeNeedToApply.GetAccessLevelForUser(userPerGroup.username.ToLower()),
@@ -193,15 +226,35 @@ namespace GitLabManagement
             //complete operations
             foreach (var groupMemberOperation in Operations)
             {
-                var tempParameters = new Dictionary<string, string>
+                if (inSkipDelete && groupMemberOperation.OperationType == GroupMemberOperationType.Remove)
+                {
+                    Console.WriteLine($"Delete cancelled: For user {groupMemberOperation.member} and group {inGroupName}");
+                }
+                else
+                {
+                    var tempParameters = new Dictionary<string, string>
                 {
                     {"user_id", groupMemberOperation.member_id.ToString()}
                 };
-                if (groupMemberOperation.OperationType != GroupMemberOperationType.Remove)
-                {
-                    tempParameters.Add("access_level", groupMemberOperation.AccessLevel.ToString());
+                    if (groupMemberOperation.OperationType != GroupMemberOperationType.Remove)
+                    {
+                        tempParameters.Add("access_level", groupMemberOperation.AccessLevel.ToString());
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Deleting user {groupMemberOperation.member} from group {inGroupName}");
+                    }
+
+                    //log the operations that are going to happen
+                    Console.WriteLine($"Operation detail: For user {groupMemberOperation.member} and group {inGroupName} we are executing operation {groupMemberOperation.OperationType.ToString()}");
+
+                    var callRequest = $"groups/{tempGroup.id}/members";
+                    if (groupMemberOperation.OperationType == GroupMemberOperationType.Update || groupMemberOperation.OperationType == GroupMemberOperationType.Remove)
+                    {
+                        callRequest = $"{callRequest}/{groupMemberOperation.member_id}";
+                    }
+                    var result = ExecuteQuery(callRequest, tempParameters, groupMemberOperation.HttpMethod);
                 }
-                var result = ExecuteQuery($"groups/{tempGroup.id}/members", tempParameters, groupMemberOperation.HttpMethod);
             }
         }
     }

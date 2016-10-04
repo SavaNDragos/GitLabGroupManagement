@@ -26,39 +26,47 @@ namespace GitLabGroupManagement.Utils.Types
             //we parse the file line by line
             foreach (var iterLine in allpermissionsContent)
             {
-                if (!string.IsNullOrWhiteSpace(iterLine))
+                try
                 {
-                    if (iterLine.StartsWith("Collection: "))
+                    if (!string.IsNullOrWhiteSpace(iterLine))
                     {
-                        currentName = iterLine.Replace("Collection: ", "").Replace(" ", "");
-                        AddUserCollection(currentName);
-                        currentProcessing = ProcessingStatus.IsCollection;
-                    }
-
-                    else if (iterLine.StartsWith("Group: "))
-                    {
-                        currentName = iterLine.Replace("Group: ", "").Replace(" ", "");
-                        AddGroup(currentName);
-                        currentProcessing = ProcessingStatus.IsGroup;
-                    }
-                    else if (iterLine.StartsWith("Project: "))
-                    {
-                        currentName = iterLine.Replace("Project: ", "").Replace(" ", "");
-                        AddProject(currentName);
-                        currentProcessing = ProcessingStatus.IsProject;
-                    }
-                    else
-                    {
-                        if (string.IsNullOrWhiteSpace(iterLine)) continue;
-
-                        if (currentName == string.Empty)
+                        if (iterLine.StartsWith("Collection: "))
                         {
-                            Console.WriteLine(
-                                "Please keep the file clean. Remove any extra line from the start of the file till a collection/group/project appears.");
+                            currentName = iterLine.Replace("Collection: ", "").Replace(" ", "");
+                            AddUserCollection(currentName);
+                            currentProcessing = ProcessingStatus.IsCollection;
                         }
 
-                        AddElement(currentName, currentProcessing, iterLine.Replace(" ", ""));
+                        else if (iterLine.StartsWith("Group: "))
+                        {
+                            currentName = iterLine.Replace("Group: ", "").Replace(" ", "");
+                            AddGroup(currentName);
+                            currentProcessing = ProcessingStatus.IsGroup;
+                        }
+                        else if (iterLine.StartsWith("Project: "))
+                        {
+                            currentName = iterLine.Replace("Project: ", "").Replace(" ", "");
+                            AddProject(currentName);
+                            currentProcessing = ProcessingStatus.IsProject;
+                        }
+                        else
+                        {
+                            if (string.IsNullOrWhiteSpace(iterLine)) continue;
+
+                            if (currentName == string.Empty)
+                            {
+                                Console.WriteLine(
+                                    "Please keep the file clean. Remove any extra line from the start of the file till a collection/group/project appears.");
+                            }
+
+                            AddElement(currentName, currentProcessing, iterLine.Replace(" ", ""));
+                        }
                     }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Exception was detected while going over line {iterLine}");
+                    throw ex;
                 }
             }
 

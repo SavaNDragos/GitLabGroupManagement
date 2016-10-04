@@ -60,6 +60,9 @@ namespace GitLabManagement
         public string name { get; set; }
         public string path { get; set; }
         public string description { get; set; }
+        public int visibility_level { get; set; }
+        public string avatar_url { get; set; }
+        public string web_url { get; set; }
     }
 
 

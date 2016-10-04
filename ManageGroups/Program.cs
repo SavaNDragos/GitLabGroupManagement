@@ -5,7 +5,7 @@ using GitLabManagement;
 
 namespace ManageGroups
 {
-    internal class Program
+    class Program
     {
         private static void Main(string[] args)
         {
@@ -14,11 +14,6 @@ namespace ManageGroups
             {
                 throw new Exception("Incorect usage of command line parameters. Please review.");
             }
-
-            //for debug testing 
-            //options.GitAddress = "";
-            //options.PrivateToken = "";
-            //options.FileContentLocation = "D:\\filetest.txt";
 
             try
             {
@@ -32,7 +27,7 @@ namespace ManageGroups
                 //pass on each group and apply changes
                 foreach (var iterGroup in allpermisions.Groups)
                 {
-                    gitLabApiHelper.UpdateGroup(iterGroup, allpermisions);
+                    gitLabApiHelper.UpdateGroup(iterGroup, allpermisions,options.SkipDelete);
                 }
             }
             catch (Exception ex)

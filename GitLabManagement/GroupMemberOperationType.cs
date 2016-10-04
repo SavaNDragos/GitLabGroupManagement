@@ -10,6 +10,6 @@ namespace GitLabManagement
     {
         Add,
         Remove,
-        Update
+        Update       
     }
 }
